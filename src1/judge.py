@@ -619,7 +619,7 @@ def save_json(data, file_path):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 def main():
-    pairs = load_json('/home/shangbin/sparta_alignment/dpo_model/example16/iteration_0_judge_pairs.json')
+    pairs = load_json('') ## add the path of the judge pairs json file
     
     judge_configs = [
         {

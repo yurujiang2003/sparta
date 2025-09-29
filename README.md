@@ -32,7 +32,6 @@ This single command will automatically:
 3. **Calculate dynamic ratings** using advanced rating systems
 4. **Generate preference data** from model competitions
 5. **Train models with DPO** using the preference data
-6. **Evaluate final performance** across all iterations
 
 
 ## Supported Tasks
@@ -151,13 +150,6 @@ Simply edit the variables in `run_pipeline.sh`:
 3. **Change GPU**: Update `GPU_IDS`
 4. **Change iterations**: Modify `MAX_ITERATIONS`
 5. **Change training**: Adjust `NUM_EPOCHS`, `LR`, `BS`
-
-## Evaluation Metrics
-
-- **Win Rate**: Percentage of matches won
-- **Rating Score**: Dynamic rating based on performance
-- **Deviation**: Rating uncertainty measure
-- **Preference Accuracy**: Alignment with human preferences
 
 ## Advanced Customization
 
