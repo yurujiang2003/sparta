@@ -318,7 +318,7 @@ def main():
     """Main function to handle command line arguments and model initialization"""
     parser = argparse.ArgumentParser(description='Initialize models')
     parser.add_argument('--save_dir', type=str, 
-                       default="/home/shangbin/sparta_alignment/init_model",
+                       default="",
                        help='Directory to save the models')
     parser.add_argument('--base_model', type=str,
                        default="qwen",
