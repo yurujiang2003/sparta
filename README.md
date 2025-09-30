@@ -1,5 +1,6 @@
 # SPARTA ALIGNMENT: Collectively Aligning Multiple Language Models through Combat
 
+Repository for [SPARTA ALIGNMENT: Collectively Aligning Multiple Language Models through Combat](https://arxiv.org/abs/2506.04721).
 A comprehensive framework for model competition, evaluation, and alignment using advanced rating systems and multi-model inference capabilities.
 
 ## Quick Start
