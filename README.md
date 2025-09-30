@@ -205,7 +205,7 @@ python dpo_new.py 0 --base_dir ./results --model_names model1,model2
 
 ## Citation
 
-If Sparta is helpful you:
+If Sparta is helpful to you:
 
 ```bibtex
 @misc{jiang2025spartaalignmentcollectivelyaligning,
