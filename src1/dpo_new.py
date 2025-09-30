@@ -115,7 +115,7 @@ def format_chat_template(row: Dict, tokenizer, base_model: str) -> Dict:
     """
     if base_model == "qwen":
         messages = [
-            {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
+            {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."}, #### I recommend you to change this system prompt
             {"role": "user", "content": row['prompt']}
         ]
         row['prompt'] = tokenizer.apply_chat_template(

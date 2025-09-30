@@ -325,14 +325,14 @@ class RatingSystemDynamicWeighted(RatingSystem):
         Returns:
             dict: model name to weight mapping
         """
-        # 默认权重为1.0
+        # the default weight is 1.0
         weights = {model: 1.0 for model in self.model_ratings.keys()}
         
         if not self.base_dir or self.current_iteration is None:
             return weights
             
         try:
-            # 如果是第8次迭代或之后，加载第7次迭代的权重并固定
+            # if the current iteration is 8 or later, load the weights of the 7th iteration and fix it
             if self.current_iteration >= 8:
                 weights_path = os.path.join(self.base_dir, "iteration_7", "weights.json")
                 if os.path.exists(weights_path):
@@ -340,7 +340,7 @@ class RatingSystemDynamicWeighted(RatingSystem):
                         return json.load(f)
                 return weights
             
-            # 第7次迭代及之前的动态权重计算逻辑
+            # the dynamic weight calculation logic for the 7th iteration and before
             if self.current_iteration >= 2:
                 prev_iter = self.current_iteration - 1
                 prev_model_info_path = os.path.join(
@@ -365,7 +365,7 @@ class RatingSystemDynamicWeighted(RatingSystem):
                     else:
                         weights[model] = 0.1 * i
                 
-                # 在第7次迭代时保存权重
+                # save weights at the 7th iteration
                 if self.current_iteration == 7:
                     weights_path = os.path.join(self.base_dir, "iteration_7", "weights.json")
                     os.makedirs(os.path.dirname(weights_path), exist_ok=True)
@@ -545,7 +545,7 @@ class RatingSystemStaticWeighted(RatingSystem):
             return weights
             
         try:
-            # 如果是第8次迭代或之后，加载第7次迭代的权重并固定
+            # if the current iteration is 8 or later, load the weights of the 7th iteration and fix it
             if self.current_iteration >= 8:
                 weights_path = os.path.join(self.base_dir, "iteration_7", "weights.json")
                 if os.path.exists(weights_path):
@@ -553,7 +553,7 @@ class RatingSystemStaticWeighted(RatingSystem):
                         return json.load(f)
                 return weights
             
-            # 第7次迭代及之前的静态权重计算逻辑
+            # the static weight calculation logic for the 7th iteration and before
             weighted_models = []
             
             for iter_num in range(2, self.current_iteration + 1):

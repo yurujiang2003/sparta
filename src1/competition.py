@@ -796,8 +796,6 @@ def main():
                           help='Number of steps for decay')
         parser.add_argument('--scaling_factor', type=float, default=20.0,
                           help='Scaling factor for rating calculations')
-        
-        # 添加 freeze_ratings 参数
         parser.add_argument('--freeze_ratings', type=lambda x: x.lower() == 'true', default=False,
                           help='Freeze model ratings and deviations (true/false)')
         
@@ -882,10 +880,10 @@ def main():
             model_type = model_base_mapping[model_name]
             
             if iteration == 0:
-                # 初始模型路径格式: init_model_dir/model_type/model_name
+                # The format of the initial model path: init_model_dir/model_type/model_name
                 model_path = os.path.join(args.init_model_dir, model_type, model_name)
             else:
-                # 非初始迭代：使用上一轮的结果
+                # Non-initial iteration: use the results of the previous round
                 model_path = os.path.join(base_model_dir, f"iteration_{iteration-1}", model_name)
             
             output_path = os.path.join(base_model_dir, f"iteration_{iteration}", model_name)
