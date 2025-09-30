@@ -922,7 +922,7 @@ def main():
             )
         elif task == 'truthfulqa_mc1,truthfulqa_mc2':
             total_instructions = extract_from_json_truthfulqa(
-                os.path.join(args.data_dir, 'truthfulqa/data.jsonl'),
+                os.path.join(args.data_dir, 'truthfulqa/data_train.jsonl'),
                 args.num_instructions
             )
         elif task == 'culture_country':
