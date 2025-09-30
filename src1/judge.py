@@ -46,8 +46,8 @@ class Judge:
             if self.inferencer is None:
                 self.inferencer = Inference(self.judge_name, self.gpu_id, self.judge_path, self.base_model)
 
-            # 分批处理pairs
-            sub_batch_size = 10  # 更小的批次大小
+            # batch process pairs
+            sub_batch_size = 10  # smaller batch size
             for start_idx in range(0, len(valid_pairs), sub_batch_size):
                 end_idx = min(start_idx + sub_batch_size, len(valid_pairs))
                 current_pairs = valid_pairs[start_idx:end_idx]
@@ -65,17 +65,17 @@ class Judge:
         return pairs
 
     def _process_pairs_batch(self, pairs_batch):
-        """处理一个小批次的pairs"""
+        """process a batch of pairs"""
         all_judgements = []
         for round_num in range(self.round_num):
             round_results = self._process_single_round(pairs_batch)
             all_judgements.append(round_results)
             
-        # 更新结果
+        # update the results
         self._update_pairs_with_judgements(pairs_batch, all_judgements)
 
     def _cleanup(self):
-        """清理资源"""
+        """clean up the resources"""
         if self.inferencer is not None:
             try:
                 del self.inferencer
@@ -89,7 +89,7 @@ class Judge:
             pass
 
     def _process_single_round(self, pairs_batch):
-        """处理单个round的pairs"""
+        """process a single round of pairs"""
         processed_results = {}
         responses = []
         all_instructions = []
@@ -151,7 +151,7 @@ Your output should be like this:
         return round_results
 
     def _update_pairs_with_judgements(self, pairs_batch, all_judgements):
-        """更新pairs的judgements"""
+        """update the judgements of pairs"""
         for idx, pair in enumerate(pairs_batch):
             if 'judges' not in pair:
                 pair['judges'] = {}
@@ -405,11 +405,11 @@ def cleanup_resources():
 
 def process_with_single_judge(judge_config: Dict, pairs: List[Dict], gpu_id: int, 
                             batch_size: int, round_num: int, base_dir: str, base_model: str) -> None:
-    """单个judge处理所有数据并保存中间结果"""
+    """single judge process all data and save intermediate results"""
     try:
         judge_name = judge_config["name"]
         judge_path = judge_config["path"]
-        # 从model_config中获取model_type，如果没有则使用传入的base_model
+        # get the model_type from model_config, if not provided, use the base_model
         judge_model_type = judge_config.get("model_type", base_model)
         output_dir = os.path.join(base_dir, f"intermediate_results/{judge_name}")
         os.makedirs(output_dir, exist_ok=True)
@@ -423,21 +423,21 @@ def process_with_single_judge(judge_config: Dict, pairs: List[Dict], gpu_id: int
             judge_path=judge_path, 
             gpu_id=0, 
             batch_size=batch_size, 
-            base_model=judge_model_type,  # 使用从config中获取的model_type
+            base_model=judge_model_type,  # use the model_type from config
             round_num=round_num
         )
         
         try:
-            # 初始化模型
+            # initialize the model
             if judge.inferencer is None:
                 judge.inferencer = Inference(
                     model_name=judge_name, 
                     gpu_id=0, 
                     model_path=judge_path, 
-                    base_model=judge_model_type  # 使用从config中获取的model_type
+                    base_model=judge_model_type  # use the model_type from config
                 )
             
-            # 分块处理数据
+            # chunk process data
             chunk_size = 50
             pair_chunks = [pairs[i:i + chunk_size] for i in range(0, len(pairs), chunk_size)]
             
@@ -451,13 +451,13 @@ def process_with_single_judge(judge_config: Dict, pairs: List[Dict], gpu_id: int
                 ]
                 
                 if valid_pairs:
-                    # 处理当前chunk
+                    # process the current chunk
                     for start_idx in range(0, len(valid_pairs), judge.batch_size):
                         end_idx = min(start_idx + judge.batch_size, len(valid_pairs))
                         current_pairs = valid_pairs[start_idx:end_idx]
                         judge._process_pairs_batch(current_pairs)
                 
-                # 保存处理后的chunk结果
+                # save the processed chunk results
                 save_path = os.path.join(output_dir, f"chunk_{chunk_idx}.json")
                 with open(save_path, 'w') as f:
                     json.dump(chunk, f)
@@ -480,7 +480,7 @@ def process_with_single_judge(judge_config: Dict, pairs: List[Dict], gpu_id: int
         cleanup_resources()
 
 def merge_judge_results(pairs: List[Dict], model_configs: List[Dict], base_dir: str) -> List[Dict]:
-    """合并所有judge的结果"""
+    """merge all judge results"""
     final_pairs = pairs.copy()
     
     for config in model_configs:
@@ -518,33 +518,33 @@ def merge_judge_results(pairs: List[Dict], model_configs: List[Dict], base_dir: 
 def run_judges(model_configs: List[Dict], pairs: List[Dict], gpu_ids: List[int], 
                batch_size: int = 4, round_num: int = 5, base_dir: str = None, 
                base_model: str = "gemma") -> List[Dict]:
-    """修改后的主函数，每组内并行处理，组之间串行处理"""
+    """modified main function, process each group in parallel, and process each group sequentially"""
     try:
-        # 将模型配置分成两组
+        # split the model configs into two groups
         mid_point = len(model_configs) // 2
         model_groups = [
-            model_configs[:mid_point],  # 第一组模型
-            model_configs[mid_point:]   # 第二组模型
+            model_configs[:mid_point],  # the first group of models
+            model_configs[mid_point:]   # the second group of models
         ]
         
         final_pairs = pairs.copy()
         
-        # 串行处理每组模型
+        # sequentially process each group of models
         for group_idx, model_group in enumerate(model_groups):
             print(f"Processing model group {group_idx + 1}/{len(model_groups)}")
             
-            # 为当前组的judge创建进程参数
+            # create the process arguments for the current group of judges
             pool_args = [
                 (config, pairs, gpu_id, batch_size, round_num, base_dir, base_model)  # 确保正确的参数顺序
                 for config, gpu_id in zip(model_group, gpu_ids[:len(model_group)])
             ]
             
-            # 并行处理当前组的所有judge
+            # process all judges in the current group in parallel
             ctx = multiprocessing.get_context('spawn')
             with ctx.Pool(processes=len(model_group)) as pool:
                 results = pool.starmap(process_with_single_judge, pool_args)
             
-            # 合并当前组的结果
+            # merge the results of the current group
             for args, _ in zip(pool_args, results):
                 final_pairs = merge_judge_results(final_pairs, [{"name": args[0]["name"]}], base_dir)
 

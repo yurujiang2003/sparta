@@ -48,7 +48,7 @@ def process_model_group(args):
                     model_name=model_name,
                     gpu_id=gpu_id,
                     model_path=model_paths[model_name],
-                    base_model=model_types[model_name]  # 用各自的model_type
+                    base_model=model_types[model_name]  # use the model_type of the model
                 )
                 
                 result = inference.batch_generate_responses(
@@ -91,7 +91,7 @@ class Competition:
         self.model_configs = model_configs
         self.model_names = [config["name"] for config in model_configs]
         self.model_paths = {config["name"]: config["path"] for config in model_configs}
-        self.model_types = {config["name"]: config["model_type"] for config in model_configs}  # 新增
+        self.model_types = {config["name"]: config["model_type"] for config in model_configs} 
         self.model_info = model_info
         self.num_opponents = num_opponents
         self.random_match_prob = random_match_prob
@@ -108,7 +108,7 @@ class Competition:
             torch.cuda.empty_cache()
 
             model_path = self.model_paths[model_name]
-            model_type = self.model_types[model_name]  # 用各自的model_type
+            model_type = self.model_types[model_name]  
             inference = Inference(
                 model_name=model_name,
                 gpu_id=gpu_id,
@@ -212,7 +212,7 @@ class Competition:
         model_responses = {}
         with Pool(processes=len(model_groups)) as pool:
             process_args = [
-                (group, model_tasks, gpu_id, self.model_paths, self.model_types)  # 传入model_types
+                (group, model_tasks, gpu_id, self.model_paths, self.model_types)  
                 for gpu_id, group in enumerate(model_groups)
             ]
 
@@ -806,15 +806,15 @@ def main():
         model_names = args.model_names.split(',')
         base_models = args.base_model.split(',')
 
-        # 确保 base_models 和 model_names 长度一致
+        # ensure the length of base_models and model_names are the same
         if len(base_models) != len(model_names):
             if len(base_models) == 1:
-                # 如果只提供一个base_model，复制到所有模型
+                # if only one base_model is provided, copy it to all models
                 base_models = [base_models[0]] * len(model_names)
             else:
                 raise ValueError(f"base_model list length ({len(base_models)}) must match model_names length ({len(model_names)})")
 
-        # 创建 model_name 到 base_model 的映射
+        # create the mapping from model_name to base_model
         model_base_mapping = dict(zip(model_names, base_models))
 
         iteration = args.iteration
