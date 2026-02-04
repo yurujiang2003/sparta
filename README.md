@@ -1,7 +1,9 @@
 # SPARTA ALIGNMENT: Collectively Aligning Multiple Language Models through Combat
 
-Repository for [SPARTA ALIGNMENT: Collectively Aligning Multiple Language Models through Combat](https://arxiv.org/abs/2506.04721).
+Repository for [SPARTA ALIGNMENT: Collectively Aligning Multiple Language Models through Combat](https://arxiv.org/abs/2506.04721), NeurIPS 2025.
 A comprehensive framework for model competition, evaluation, and alignment using advanced rating systems and multi-model inference capabilities.
+
+🌟 **A better implementation of Sparta Alignment, as well as many other multi-LLM collaboration approaches, is now available in [MoCo](https://github.com/BunsenFeng/model_collaboration)!**
 
 ## Quick Start
 
